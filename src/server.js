@@ -1,14 +1,14 @@
 import express from "express";
-import authorsRoutes from "./services/authors.js";
-import blogsRoutes from "./services/blogs.js";
+import productsRoutes from "./services/products.js";
+import reviewsRoutes from "./services/products.js";
 const server = express();
 
 const { PORT = 5001 } = process.env;
 
 server.use(express.json());
 
-server.use("/authors", authorsRoutes);
-server.use("/blogs", blogsRoutes);
+server.use("/products", productsRoutes);
+server.use("/reviews", reviewsRoutes);
 
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

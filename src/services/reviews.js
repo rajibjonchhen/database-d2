@@ -1,12 +1,12 @@
 import { Router } from "express";
 import pool from "../utils/db/connect.js";
 
-const blogsRouter = Router();
+const reviewsRouter = Router();
 
-blogsRouter.get("/", async (req, res, next) => {
+reviewsRouter.get("/", async (req, res, next) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM blogs JOIN authors ON blogs.author_id=authors.author_id;`
+      `SELECT * FROM reviews JOIN products ON reviews.product_id=products.product_id;`
     );
     res.send(result.rows);
   } catch (error) {
@@ -14,27 +14,27 @@ blogsRouter.get("/", async (req, res, next) => {
   }
 });
 
-blogsRouter.get("/:blog_id", async (req, res, next) => {
+reviewsRouter.get("/:review_id", async (req, res, next) => {
   try {
     const result = await pool.query(
-      `SELECT * FROM blogs JOIN authors ON blogs.author_id=authors.author_id WHERE blog_id=$1;`,
-      [req.params.blog_id]
+      `SELECT * FROM reviews JOIN products ON reviews.product_id=products.product_id WHERE review_id=$1;`,
+      [req.params.review_id]
     );
     if (result.rows[0]) {
       res.send(result.rows);
     } else {
-      res.status(404).send({ message: "No such blog." });
+      res.status(404).send({ message: "No such review." });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 });
 
-blogsRouter.post("/", async (req, res, next) => {
+reviewsRouter.post("/", async (req, res, next) => {
   try {
     const result = await pool.query(
-      `INSERT INTO blogs(title,content,author_id) VALUES($1,$2,$3) RETURNING *;`,
-      [req.body.title, req.body.content, req.body.author_id]
+      `INSERT INTO reviews(title,content,product_id) VALUES($1,$2,$3) RETURNING *;`,
+      [req.body.title, req.body.content, req.body.product_id]
     );
     res.send(result.rows[0]);
   } catch (error) {
@@ -42,11 +42,11 @@ blogsRouter.post("/", async (req, res, next) => {
   }
 });
 
-blogsRouter.put("/:blog_id", async (req, res, next) => {
+reviewsRouter.put("/:review_id", async (req, res, next) => {
   try {
     const result = await pool.query(
-      `UPDATE blogs SET title=$1,content=$2,cover=$3 WHERE blog_id=$4 RETURNING * ;`,
-      [req.body.title, req.body.content, req.body.cover, req.params.blog_id]
+      `UPDATE reviews SET title=$1,content=$2,cover=$3 WHERE review_id=$4 RETURNING * ;`,
+      [req.body.title, req.body.content, req.body.cover, req.params.review_id]
     );
     res.send(result.rows[0]);
   } catch (error) {
@@ -56,17 +56,17 @@ blogsRouter.put("/:blog_id", async (req, res, next) => {
 
 // dynamic sql update query generate
 
-// blogsRouter.put("/:author_id", async (req, res, next) => {
+// reviewsRouter.put("/:product_id", async (req, res, next) => {
 //   try {
 //     // first_name=$1,last_name=$2
-//     const query = `UPDATE blogs SET ${Object.keys(req.body)
+//     const query = `UPDATE reviews SET ${Object.keys(req.body)
 //       .map((key, i) => `${key}=$${i + 1}`)
-//       .join(",")} WHERE author_id=$${
+//       .join(",")} WHERE product_id=$${
 //       Object.keys(req.body).length + 1
 //     } RETURNING * ;`;
 //     const result = await pool.query(query, [
 //       ...Object.values(req.body),
-//       req.params.author_id,
+//       req.params.product_id,
 //     ]);
 //     res.send(result.rows[0]);
 //   } catch (error) {
@@ -74,10 +74,10 @@ blogsRouter.put("/:blog_id", async (req, res, next) => {
 //   }
 // });
 
-blogsRouter.delete("/:blog_id", async (req, res, next) => {
+reviewsRouter.delete("/:review_id", async (req, res, next) => {
   try {
-    await pool.query(`DELETE FROM blogs WHERE blog_id=$1;`, [
-      req.params.blog_id,
+    await pool.query(`DELETE FROM reviews WHERE review_id=$1;`, [
+      req.params.review_id,
     ]);
     res.status(204).send();
   } catch (error) {
@@ -85,4 +85,4 @@ blogsRouter.delete("/:blog_id", async (req, res, next) => {
   }
 });
 
-export default blogsRouter;
+export default reviewsRouter;
