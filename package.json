@@ -1,0 +1,32 @@
+{
+  "name": "database-d2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "prestart": "npm run create-tables",
+    "start": "node ./src/server.js",
+    "dev": "nodemon -r dotenv/config ./src/server.js",
+    "create-tables": "node -r dotenv/config ./src/utils/db/create-tables.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rajibjonchhen/database-d2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rajibjonchhen/database-d2/issues"
+  },
+  "homepage": "https://github.com/rajibjonchhen/database-d2#readme",
+  "devDependencies": {
+    "dotenv": "^16.0.0",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.2",
+    "pg": "^8.7.3"
+  }
+}
